@@ -13,6 +13,12 @@ public class ManagementRepository {
     HashMap<Integer,User> userMap;
     HashMap<String ,Hotel> hotelMap;
     HashMap<String,Booking> bookingMap;
+
+    public ManagementRepository(){
+        userMap = new HashMap<>();
+        hotelMap = new HashMap<>();
+        bookingMap = new HashMap<>();
+    }
     public int booARoom(Booking booking) {
         String id = booking.getBookingId();
         Hotel hotel = hotelMap.get(booking.getHotelName());
