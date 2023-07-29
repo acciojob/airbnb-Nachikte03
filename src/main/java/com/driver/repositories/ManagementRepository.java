@@ -5,6 +5,7 @@ import com.driver.model.Facility;
 import com.driver.model.Hotel;
 import com.driver.model.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,12 +23,12 @@ public class ManagementRepository {
     public int booARoom(Booking booking) {
         String id = booking.getBookingId();
         Hotel hotel = hotelMap.get(booking.getHotelName());
-        if(hotel==null || hotel.getAvailableRooms()<=0){
+        if(hotel==null || hotel.getAvailableRooms()<=booking.getNoOfRooms()){
             return -1;
         }
         int amount = booking.getNoOfRooms()*hotel.getPricePerNight();
         bookingMap.put(booking.getBookingId(),booking);
-        hotel.setAvailableRooms(hotel.getAvailableRooms()-1);
+        hotel.setAvailableRooms(hotel.getAvailableRooms()-booking.getNoOfRooms());
         return amount;
     }
 
@@ -68,7 +69,10 @@ public class ManagementRepository {
     }
 
     public String getHotelWithMostFacilities() {
-        List<Hotel> hotel = (List<Hotel>) hotelMap.values();
+        List<Hotel> hotel = new ArrayList<>();
+        for(String hotelName:hotelMap.keySet()){
+            hotel.add(hotelMap.get(hotelName));
+        }
         if(hotel.size()==0)return "";
         Hotel curr = hotel.get(0);
         for(Hotel hotel1:hotel){
