@@ -5,9 +5,7 @@ import com.driver.model.Facility;
 import com.driver.model.Hotel;
 import com.driver.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ManagementRepository {
 
@@ -23,11 +21,13 @@ public class ManagementRepository {
     public int booARoom(Booking booking) {
         String id = booking.getBookingId();
         Hotel hotel = hotelMap.get(booking.getHotelName());
-        if(hotel==null || hotel.getAvailableRooms()<=booking.getNoOfRooms()){
+        booking.setBookingId(String.valueOf(UUID.randomUUID()));
+        if(hotel==null || hotel.getAvailableRooms()<booking.getNoOfRooms()){
             return -1;
         }
         int amount = booking.getNoOfRooms()*hotel.getPricePerNight();
         bookingMap.put(booking.getBookingId(),booking);
+        booking.setAmountToBePaid(amount);
         hotel.setAvailableRooms(hotel.getAvailableRooms()-booking.getNoOfRooms());
         return amount;
     }
@@ -69,23 +69,26 @@ public class ManagementRepository {
     }
 
     public String getHotelWithMostFacilities() {
-        List<Hotel> hotel = new ArrayList<>();
-        for(String hotelName:hotelMap.keySet()){
-            hotel.add(hotelMap.get(hotelName));
+        int count = 0;
+        for(Hotel hotel : hotelMap.values()){
+            count = Math.max(hotel.getFacilities().size() , count);
         }
-        if(hotel.size()==0)return "";
-        Hotel curr = hotel.get(0);
-        for(Hotel hotel1:hotel){
-            if(curr.getFacilities().size()<hotel1.getFacilities().size()){
-                curr = hotel1;
-            }
-            if(curr.getFacilities().size()==hotel1.getFacilities().size()){
-                if(curr.getHotelName().compareTo(hotel1.getHotelName())>1){
-                    curr = hotel1;
+        if(count == 0)
+            return "";
+        String curr = "";
+        for(Hotel hotel : hotelMap.values()){
+            if(hotel.getFacilities().size() == count){
+                if(curr.length()==0){
+                    curr = hotel.getHotelName();
+                }
+                else{
+                    if(curr.compareTo(hotel.getHotelName())>0){
+                        curr = hotel.getHotelName();
+                    }
                 }
             }
         }
-        return curr.getHotelName();
+
 
     }
 }
