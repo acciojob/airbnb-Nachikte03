@@ -19,7 +19,6 @@ public class ManagementRepository {
         bookingMap = new HashMap<>();
     }
     public int booARoom(Booking booking) {
-        String id = booking.getBookingId();
         Hotel hotel = hotelMap.get(booking.getHotelName());
         booking.setBookingId(String.valueOf(UUID.randomUUID()));
         if(hotel==null || hotel.getAvailableRooms()<booking.getNoOfRooms()){
@@ -88,6 +87,7 @@ public class ManagementRepository {
                 }
             }
         }
+        return curr;
 
 
     }
